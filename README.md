@@ -1,5 +1,3 @@
-https://matheusmazeto.github.io/marvel-characters/index.html
-
 <h1 align="center">
 <br>
   <a href="https://github.com/matheusmazeto/marvel-characters"><img src="https://wallpapercave.com/wp/wp2700184.jpg" alt="marvel-characters" width=256"></a>
