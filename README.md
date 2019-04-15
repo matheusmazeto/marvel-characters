@@ -1,29 +1,56 @@
-O objetivo desse projeto é mostrar suas habilidades com desenvolvimento front-end, mais especificamente HTML/CSS/JS. Procure deixar o código mais simples possível.
+https://matheusmazeto.github.io/marvel-characters/index.html
 
-O projeto consiste em fazer uma SPA (Single Page Application) responsiva dividida em duas partes, para mostrar informações sobre os super-heróis da Marvel:
+<h1 align="center">
+<br>
+  <a href="https://github.com/matheusmazeto/marvel-characters"><img src="https://wallpapercave.com/wp/wp2700184.jpg" alt="marvel-characters" width=256"></a>
+<br>
+<br>
+Marvel Characters
+</h1>
+<p align="center">
+  <a href="https://matheusmazeto.github.io/marvel-characters/index.html">Veja Online</a>
+</p>
 
-1. Listagem:
+<p align="center">
+  <a href="http://makeapullrequest.com">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs Welcome">
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/license-MIT-black.svg?style=flat-square" alt="License MIT">
+  </a>
+</p>
 
-- Mostra uma lista com os super-heróis, as séries que eles participam e os eventos da Marvel onde eles aparecem.
-- A listagem deve ter 10 super-heróis por página. Na listagem, mostrar apenas 3 séries e os eventos.
-- Para telas pequenas, mostrar apenas os super-heróis, sem suas séries e eventos.
-- Deve ser possível filtrar os personagens por nome.
-- Deve ser possível navegar entre as páginas da tabela.
-- Ao selecionar um super-herói, mostrar as informações sobre ele em na parte de Detalhe.
-  Seguir a especificação em anexo.
+<hr />
 
-2. Detalhes:
+## Funções
 
-- Mostrar detalhes dos eventos/séries que o super-herói participou.
-- Layout livre. Use a criatividade.
+- Listagem dos super-heróis, as séries que eles participam e os eventos da Marvel onde eles aparecem.
+- Filtro com base nos nomes dos personagens.
+- Paginação.
+- Modal com informações dos Personagens.
 
-Para criar o App, você deve utilizar as APIs que a Marvel disponibiliza: https://developer.marvel.com/. Crie uma conta e siga a documentação do site.
+## Project files
 
-Restrições do projeto
+```text
+.
+|--- src
+    |--- index.js
+|--- .babelrc
+|--- .editorconfig
+|--- .prettierrc
+|--- index.html
+|--- package.json
+|--- README.md
+```
 
-- Não utilizar apis/frameworks (tais como Jquery, bootstrap, angular). O objetivo é testar suas habilidades com HTML/CSS/JS.
+## Utilização do projeto
 
-Cronograma do projeto
+1. Clone este repositório `https://github.com/matheusmazeto/marvel-characters.git`
+2. Vá para a pasta: `cd marvel-characters`.<br />
+3. Abra o arquivo index.html no seu navegador ou dispositivo de prefêrencia .
+4. Ao abrir no navegador, pode ser que o navegador impessa de carregador os scripts necessários,
+   favor dar permissão para carregar os scripts.
 
-- Esperamos receber o projeto em até 3 dias.
-- Caso você precise de mais tempo, por favor nos avise. Projetos enviados fora do prazo de 3 dias e que não tenham sinalizado a necessidade de expansão do prazo serão desconsiderados.
+## Licensa
+
+MIT license, Copyright (c) 2018 **Matheus Mazeto**.

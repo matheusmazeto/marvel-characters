@@ -54,11 +54,11 @@
     const arrayFiltered = charactersData.filter(hero => {
       return regex.test(hero.name);
     });
-    const a = arrayFiltered.map(item => createHTML(item));
-    const b = charactersData.map(item => createHTML(item));
+    const filtered = arrayFiltered.map(item => createHTML(item));
+    const notFiltered = charactersData.map(item => createHTML(item));
     return inputValue !== ''
-      ? (boxCharacters.innerHTML = a)
-      : (boxCharacters.innerHTML = b);
+      ? (boxCharacters.innerHTML = filtered)
+      : (boxCharacters.innerHTML = notFiltered);
   }
 
   async function getCharacters() {
