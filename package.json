@@ -1,0 +1,8 @@
+{
+  "name": "marvel-characters",
+  "version": "1.0.0",
+  "description": "Marvel API application",
+  "main": "src/js/index.js",
+  "author": "Matheus Mazeto",
+  "license": "MIT"
+}
