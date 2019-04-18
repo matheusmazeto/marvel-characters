@@ -4,21 +4,94 @@
   const PUBLIC_KEY = '671908b4f1d7b04393bf4efe6fbdf299';
   const HASH = '9c225c095c1551b84e8c5292c3c0553b';
   const TS = 1;
-  const URL = `http://gateway.marvel.com/v1/public/characters?limit=99&ts=${TS}&apikey=${PUBLIC_KEY}&hash=${HASH}`;
-  const URL_EVENTS = `http://gateway.marvel.com/v1/public/characters/1011334/events?ts=${TS}&apikey=${PUBLIC_KEY}&hash=${HASH}`;
+  const URL = `http://gateway.marvel.com/v1/public/characters?limit=100&ts=${TS}&apikey=${PUBLIC_KEY}&hash=${HASH}`;
 
   const boxCharacters = document.querySelector('.section-characters');
   const input = document.querySelector('.input');
-  let charactersData = [];
-  let ID = [];
 
   let heroesPerPage = 10;
   let startOfList = 0;
   let endOfList = heroesPerPage;
-  let paginationControls = document.querySelectorAll('.pagination ul li');
+
+  let tabsLIs = document.querySelector('.pagination ul');
 
   const modal = document.getElementById('modal');
   const modalContent = document.querySelector('.modal-content');
+
+  const tabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  let inicio = 0;
+  let fim = 6;
+
+  function cutLis() {
+    tabsLIs.innerHTML = '';
+    tabs.slice(inicio, fim).map(item => {
+      return (tabsLIs.innerHTML += `<li onClick="clickLi()">${item}</li>`);
+    });
+  }
+
+  cutLis();
+
+  let paginationControls = document.querySelectorAll(
+    'footer .pagination ul li'
+  );
+
+  const prevPage = document.querySelector('.previous-page');
+  const nextPage = document.querySelector('.next-page');
+
+  nextPage.addEventListener('click', goToNextPage);
+  prevPage.addEventListener('click', goToPreviousPage);
+
+  function goToNextPage() {
+    if (startOfList === 50) {
+      inicio = 1;
+      fim = 7;
+      cutLis();
+    } else if (startOfList === 60) {
+      inicio = 2;
+      fim = 8;
+      cutLis();
+    } else if (startOfList === 70) {
+      inicio = 3;
+      fim = 9;
+      cutLis();
+    } else if (startOfList === 80) {
+      inicio = 4;
+      fim = 10;
+      cutLis();
+    } else if (startOfList >= 90) {
+      console.log('ok');
+      return;
+    }
+    startOfList += 10;
+    endOfList += 10;
+    getCharacters();
+  }
+
+  function goToPreviousPage() {
+    if (startOfList === 50) {
+      inicio = 0;
+      fim = 6;
+      cutLis();
+    } else if (startOfList === 60) {
+      inicio = 1;
+      fim = 7;
+      cutLis();
+    } else if (startOfList === 70) {
+      inicio = 2;
+      fim = 8;
+      cutLis();
+    } else if (startOfList === 80) {
+      inicio = 3;
+      fim = 9;
+      cutLis();
+    } else if (startOfList <= 0) {
+      console.log('ok');
+      return;
+    }
+    startOfList -= 10;
+    endOfList -= 10;
+    getCharacters();
+  }
 
   getCharacters();
   controls();
@@ -30,44 +103,44 @@
       item.classList.remove('active');
       item.addEventListener('click', function() {
         controls();
-        rangeUsersPerPage(index, item);
+        clickLi(index, item);
         getCharacters();
       });
     });
   }
 
-  function rangeUsersPerPage(index, item) {
+  window.clickLi = (index, item) => {
     if (!index) {
       startOfList = 0;
       endOfList = heroesPerPage;
-      item.classList.add('active');
+      paginationControls[0].classList.add('active');
     } else {
       item.classList.add('active');
       startOfList = heroesPerPage * index;
       endOfList = startOfList + heroesPerPage;
     }
-  }
+  };
 
-  function searchFilter(e) {
+  async function searchFilter(e) {
     const inputValue = e.target.value;
-    let regex = new RegExp(inputValue, 'gi');
-    const arrayFiltered = charactersData.filter(hero => {
-      return regex.test(hero.name);
-    });
-    const filtered = arrayFiltered.map(item => createHTML(item));
-    const notFiltered = charactersData.map(item => createHTML(item));
-    return inputValue !== ''
-      ? (boxCharacters.innerHTML = filtered)
-      : (boxCharacters.innerHTML = notFiltered);
+    if (inputValue !== '') {
+      const URL_SEARCH = `https://gateway.marvel.com/v1/public/characters?name=${inputValue}&ts=${TS}&apikey=${PUBLIC_KEY}&hash=${HASH}`;
+      const response = await fetch(URL_SEARCH);
+      const data = await response.json();
+      const results = data['data'].results;
+      const heroes = results.map(item => {
+        return (boxCharacters.innerHTML = createHTML(item));
+      });
+      return heroes;
+    }
+    return getCharacters();
   }
 
   async function getCharacters() {
     const response = await fetch(URL);
     const data = await response.json();
     const results = data['data'].results;
-    charactersData = results;
     boxCharacters.innerHTML = '';
-    results.map(item => ID.push(item.id));
     return results.slice(startOfList, endOfList).map(item => {
       boxCharacters.innerHTML += createHTML(item);
     });
