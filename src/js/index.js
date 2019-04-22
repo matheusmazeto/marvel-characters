@@ -4,122 +4,154 @@
   const PUBLIC_KEY = '671908b4f1d7b04393bf4efe6fbdf299';
   const HASH = '9c225c095c1551b84e8c5292c3c0553b';
   const TS = 1;
-  const URL = `http://gateway.marvel.com/v1/public/characters?limit=100&ts=${TS}&apikey=${PUBLIC_KEY}&hash=${HASH}`;
+  let OFFSET = 0;
+  let LIMIT = 10;
+  let pageIndex = 0;
+  let controlIndex = 4;
+  const URL = `http://gateway.marvel.com/v1/public/characters?limit=${LIMIT}&offset=${OFFSET}&ts=${TS}&apikey=${PUBLIC_KEY}&hash=${HASH}`;
 
   const boxCharacters = document.querySelector('.section-characters');
   const input = document.querySelector('.input');
 
-  let heroesPerPage = 10;
-  let startOfList = 0;
-  let endOfList = heroesPerPage;
-
-  let tabsLIs = document.querySelector('.pagination ul');
-
   const modal = document.getElementById('modal');
   const modalContent = document.querySelector('.modal-content');
 
-  const tabs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  let inicio = 0;
-  let fim = 6;
+  let allLIs = document.querySelectorAll('.pagination ul li');
+  const Ul = document.querySelector('.pagination ul');
 
-  function cutLis() {
-    tabsLIs.innerHTML = '';
-    tabs.slice(inicio, fim).map(item => {
-      return (tabsLIs.innerHTML += `<li onClick="clickLi()">${item}</li>`);
-    });
-  }
-
-  cutLis();
-
-  let paginationControls = document.querySelectorAll(
-    'footer .pagination ul li'
-  );
-
-  const prevPage = document.querySelector('.previous-page');
+  const previousPage = document.querySelector('.previous-page');
   const nextPage = document.querySelector('.next-page');
 
   nextPage.addEventListener('click', goToNextPage);
-  prevPage.addEventListener('click', goToPreviousPage);
+  previousPage.addEventListener('click', function() {
+    if (pageIndex) {
+      goToPreviousPage();
+    }
+  });
+
+  window.addEventListener('load', () => {
+    allLIs[0].classList.add('active');
+    addOrRemoveDisableArrow();
+  });
+
+  allLIs.forEach((item, index) => {
+    item.classList.remove('active');
+    item.addEventListener('click', () => paginationControls(index));
+  });
+
+  function paginationControls(index) {
+    controlIndex = index;
+    removeLiClass(index);
+    allLIs[index].classList.add('active');
+    const liValue = allLIs[index].textContent;
+    if (liValue === '1') {
+      OFFSET = 0;
+    } else if (liValue === '2') {
+      OFFSET = 10;
+    } else {
+      OFFSET = 10 * liValue - 10;
+    }
+    pageIndex = parseInt(liValue - 1);
+    addOrRemoveDisableArrow();
+    getCharacters();
+  }
+
+  function addOrRemoveDisableArrow() {
+    if (OFFSET) {
+      previousPage.classList.remove('arrow-disabled');
+    } else {
+      previousPage.classList.add('arrow-disabled');
+    }
+  }
+
+  function removeLiClass(index) {
+    allLIs = document.querySelectorAll('.pagination ul li');
+    allLIs.forEach(item => {
+      item.classList.remove('active');
+    });
+    allLIs[index].classList.add('active');
+  }
 
   function goToNextPage() {
-    if (startOfList === 50) {
-      inicio = 1;
-      fim = 7;
-      cutLis();
-    } else if (startOfList === 60) {
-      inicio = 2;
-      fim = 8;
-      cutLis();
-    } else if (startOfList === 70) {
-      inicio = 3;
-      fim = 9;
-      cutLis();
-    } else if (startOfList === 80) {
-      inicio = 4;
-      fim = 10;
-      cutLis();
-    } else if (startOfList >= 90) {
-      console.log('ok');
-      return;
+    if (!OFFSET) {
+      OFFSET = 10;
+    } else {
+      OFFSET += 10;
     }
-    startOfList += 10;
-    endOfList += 10;
+    pageIndex += 1;
+    if (pageIndex < controlIndex) {
+      controlIndex = 0;
+    }
+    addOrRemoveDisableArrow();
+    isLastPage();
+    controlIndex++;
+    if (controlIndex == 6) {
+      controlIndex = 5;
+    }
+
+    removeLiClass(controlIndex);
     getCharacters();
   }
 
   function goToPreviousPage() {
-    if (startOfList === 50) {
-      inicio = 0;
-      fim = 6;
-      cutLis();
-    } else if (startOfList === 60) {
-      inicio = 1;
-      fim = 7;
-      cutLis();
-    } else if (startOfList === 70) {
-      inicio = 2;
-      fim = 8;
-      cutLis();
-    } else if (startOfList === 80) {
-      inicio = 3;
-      fim = 9;
-      cutLis();
-    } else if (startOfList <= 0) {
-      console.log('ok');
-      return;
+    if (!OFFSET) {
+      OFFSET = 10;
+    } else {
+      OFFSET -= 10;
     }
-    startOfList -= 10;
-    endOfList -= 10;
+    pageIndex -= 1;
+    addOrRemoveDisableArrow();
+    controlIndex--;
+    if (controlIndex <= 0) {
+      controlIndex = 0;
+    }
+    removeLiClass(controlIndex);
+    if (pageIndex >= 1) {
+      isFirstPage();
+    }
     getCharacters();
   }
 
-  getCharacters();
-  controls();
-  paginationControls[0].classList.add('active');
-  input.addEventListener('input', searchFilter);
-
-  function controls() {
-    paginationControls.forEach(function(item, index) {
+  function isFirstPage() {
+    if (pageIndex == 0) {
+      const arrayLI = Array.prototype.map.call(
+        allLIs,
+        item => `<li>${item.textContent}</li>`
+      );
+      arrayLI.unshift(`<li class="active">${pageIndex}</li>`);
+      arrayLI.pop();
+      pageIndex - 1;
+      Ul.innerHTML = arrayLI.join('');
+    }
+    allLIs = document.querySelectorAll('.pagination ul li');
+    allLIs.forEach((item, index) => {
       item.classList.remove('active');
-      item.addEventListener('click', function() {
-        controls();
-        clickLi(index, item);
-        getCharacters();
-      });
+      item.addEventListener('click', () => paginationControls(index));
     });
   }
 
-  window.clickLi = (index, item) => {
-    if (!index) {
-      startOfList = 0;
-      endOfList = heroesPerPage;
-      paginationControls[0].classList.add('active');
-    } else {
-      item.classList.add('active');
-      startOfList = heroesPerPage * index;
-      endOfList = startOfList + heroesPerPage;
+  function isLastPage() {
+    allLIs = document.querySelectorAll('.pagination ul li');
+    if (pageIndex == allLIs[allLIs.length - 1].textContent) {
+      const arrayLI = Array.prototype.map.call(
+        allLIs,
+        item => `<li>${item.textContent}</li>`
+      );
+      arrayLI.push(`<li class="active">${pageIndex + 1}</li>`);
+      arrayLI.shift();
+      Ul.innerHTML = arrayLI.join('');
+      pageIndex + 1;
     }
-  };
+    allLIs = document.querySelectorAll('.pagination ul li');
+    allLIs.forEach((item, index) => {
+      item.classList.remove('active');
+      item.addEventListener('click', () => paginationControls(index));
+    });
+  }
+
+  input.addEventListener('input', searchFilter);
+
+  getCharacters();
 
   async function searchFilter(e) {
     const inputValue = e.target.value;
@@ -137,11 +169,13 @@
   }
 
   async function getCharacters() {
-    const response = await fetch(URL);
+    const response = await fetch(
+      `http://gateway.marvel.com/v1/public/characters?limit=${LIMIT}&offset=${OFFSET}&ts=${TS}&apikey=${PUBLIC_KEY}&hash=${HASH}`
+    );
     const data = await response.json();
     const results = data['data'].results;
     boxCharacters.innerHTML = '';
-    return results.slice(startOfList, endOfList).map(item => {
+    return results.map(item => {
       boxCharacters.innerHTML += createHTML(item);
     });
   }

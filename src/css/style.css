@@ -266,8 +266,12 @@ html {
 .next-page i,
 .previous-page i {
   font-size: 40px;
-  color: #d20a0a;
+  color: rgb(210, 10, 10);
   cursor: pointer;
+}
+
+.arrow-disabled i {
+  color: rgba(210, 10, 10, 0.5);
 }
 
 /* modal */
